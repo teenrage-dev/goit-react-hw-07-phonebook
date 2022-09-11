@@ -1,7 +1,10 @@
 .phonebook__list {
-  list-style: '👨‍💼';
-  list-style-position: inside;
+  position: relative;
   margin: 0;
+  height: calc(100vh - 580px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  max-height: 200px;
 }
 
 .phonebook__item {
@@ -27,6 +30,10 @@
   float: left;
   text-align: left;
   margin-right: 20px;
+  font-size: 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
 }
 
 .phonebook_btn {

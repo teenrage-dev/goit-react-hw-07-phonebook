@@ -7,11 +7,11 @@ export const ContactList = ({ renderList, onDeleteContact }) => {
   return (
     <>
       <ul className={css.phonebook__list}>
-        {renderList.map(({ name, number, id }) => (
+        {renderList.map(({ name, phone, id }) => (
           <li key={nanoid()} className={css.phonebook__item}>
-            <span className={css.phonebook__item_text}>
-              {name}: {number}
-            </span>
+            <p className={css.phonebook__item_text}>
+              {name}: {phone}
+            </p>
             <button
               className={css.phonebook_btn}
               onClick={() => onDeleteContact(id)}
@@ -30,7 +30,8 @@ ContactList.propTypes = {
     PropTypes.exact({
       id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
-      number: PropTypes.string.isRequired,
+      phone: PropTypes.string.isRequired,
+      createdAt: PropTypes.string.isRequired,
     })
   ),
   onDeleteContact: PropTypes.func.isRequired,

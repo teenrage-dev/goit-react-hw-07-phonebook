@@ -1,26 +1,36 @@
 import css from './Phonebook.module.css';
-import React from 'react';
+import { useEffect } from 'react';
 import { nanoid } from 'nanoid';
 import { ContactForm } from './ContactForm/ContactForm';
 import { Filter } from './Filter/Filter';
 import { ContactList } from './ContactList/ContactList';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
-import { addContact, removeContact } from '../../redux/items/items-slice';
 import { setFilter } from '../../redux/filter/filter-slice';
+import { FallingLines } from 'react-loader-spinner';
 
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import {
+  fetchContacts,
+  addContact,
+  removeContact,
+} from '../../redux/items/items-operations';
 
 export const Phonebook = () => {
-  const items = useSelector(({ contacts }) => contacts.items);
-  const filter = useSelector(({ contacts }) => contacts.filter);
+  const items = useSelector(({ items }) => items);
+  const filter = useSelector(({ filter }) => filter);
   const dispatch = useDispatch();
-  console.log(items, filter);
+
+  console.log(items);
+
+  useEffect(() => {
+    dispatch(fetchContacts());
+  }, [dispatch]);
 
   // submit and add to local storage
   const handleSubmit = newContact => {
-    const { name, number } = newContact;
+    const { name, phone } = newContact;
 
-    const contact = items.find(
+    const contact = items.data.find(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
 
@@ -30,7 +40,7 @@ export const Phonebook = () => {
     }
     const action = addContact(newContact);
     dispatch(action);
-    const newContacts = [...items, { name, number, id: nanoid() }];
+    const newContacts = [...items.data, { name, phone, id: nanoid() }];
     return newContacts;
   };
 
@@ -44,9 +54,9 @@ export const Phonebook = () => {
   // get filtered contacts
   const getFIlteredContacts = () => {
     if (!filter) {
-      return items;
+      return items.data;
     }
-    return items.filter(contact =>
+    return items.data.filter(contact =>
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
@@ -62,22 +72,35 @@ export const Phonebook = () => {
   }
 
   const renderList = getFIlteredContacts();
-
+  // console.log(renderList);
   return (
-    <div className={css.phonebook_box}>
-      <h2>Phonebook</h2>
-      <ContactForm handleSubmit={handleSubmit} showMessage={showMessage} />
-      <div className={css.phonebook__contacts}>
-        <h2>Contacts</h2>
-        <Filter
-          filter={filter}
-          handleChangeFilterByName={handleChangeFilterByName}
-        />
-        <ContactList
-          renderList={renderList}
-          onDeleteContact={onDeleteContact}
-        />
-      </div>
-    </div>
+    <>
+      {items.loading ? (
+        <div className={css.Loader}>
+          <FallingLines
+            color="#00c9ff"
+            width="70"
+            visible={true}
+            ariaLabel="falling-lines-loading"
+          />
+        </div>
+      ) : (
+        <div className={css.phonebook_box}>
+          <h2 className={css.Title}>Phonebook</h2>
+          <ContactForm handleSubmit={handleSubmit} showMessage={showMessage} />
+          <div className={css.phonebook__contacts}>
+            <h2 className={css.Title}>Contacts</h2>
+            <Filter
+              filter={filter}
+              handleChangeFilterByName={handleChangeFilterByName}
+            />
+            <ContactList
+              renderList={renderList}
+              onDeleteContact={onDeleteContact}
+            />
+          </div>
+        </div>
+      )}
+    </>
   );
 };

@@ -6,6 +6,16 @@ body {
   height: 100vh;
 }
 
+.Loader {
+  background-color: rgba(0, 0, 0, 0.8);
+  opacity: 0.8;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .phonebook_box {
   margin: 0 auto;
   padding: 0;
@@ -19,6 +29,11 @@ body {
   color: #000;
   border: none;
   opacity: 0.9;
+}
+
+.Title {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 /* ------------------CONTACTS--------------------- */
